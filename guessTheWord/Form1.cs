@@ -10,6 +10,25 @@ namespace guessTheWord
         private Player player;
         private Logic logic;
 
+        // === Логин-панель ===
+        private Panel loginPanel;
+        private Label lblLoginTitle;
+        private Label lblLogin;
+        private TextBox txtLogin;
+        private Label lblPassword;
+        private TextBox txtPassword;
+        private Label lblNewLogin;
+        private TextBox txtNewLogin;
+        private Label lblNewPassword;
+        private TextBox txtNewPassword;
+        private Label lblNewPasswordConfirm;
+        private TextBox txtNewPasswordConfirm;
+        private Button btnLogin;
+        private Button btnRegister;
+        private Label lblLoginMessage;
+
+        // === Игровая панель ===
+        private Panel gamePanel;
         private Label lblTitle;
         private Label lblWord;
         private Label lblAttempts;
@@ -21,13 +40,7 @@ namespace guessTheWord
         private Button btnGuessWord;
         private Button btnHint;
         private Button btnNewGame;
-        private Button btnLogin;
-        private TextBox txtLogin;
-        private TextBox txtPassword;
-        private Label lblLogin;
-        private Label lblPassword;
-        private Panel loginPanel;
-        private Panel gamePanel;
+        private Button btnLogout;
 
         public Form1()
         {
@@ -38,26 +51,83 @@ namespace guessTheWord
         private void SetupForm()
         {
             this.Text = "Угадай слово";
-            this.ClientSize = new Size(500, 400);
+            this.ClientSize = new Size(500, 480);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // === Панель логина ===
+            // === ПАНЕЛЬ ЛОГИНА ===
             loginPanel = new Panel { Dock = DockStyle.Fill };
 
-            lblLogin = new Label { Text = "Логин:", Location = new Point(150, 80), Size = new Size(80, 20) };
-            txtLogin = new TextBox { Location = new Point(230, 78), Size = new Size(150, 22) };
+            lblLoginTitle = new Label
+            {
+                Text = "🔑 Вход / Регистрация",
+                Font = new Font("Arial", 14, FontStyle.Bold),
+                Location = new Point(120, 10),
+                Size = new Size(260, 30)
+            };
 
-            lblPassword = new Label { Text = "Пароль:", Location = new Point(150, 120), Size = new Size(80, 20) };
-            txtPassword = new TextBox { Location = new Point(230, 118), Size = new Size(150, 22), PasswordChar = '*' };
+            // --- Вход ---
+            var lblSectionLogin = new Label
+            {
+                Text = "── Вход ──",
+                Font = new Font("Arial", 10, FontStyle.Bold),
+                Location = new Point(170, 50),
+                Size = new Size(160, 20),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
 
-            btnLogin = new Button { Text = "Войти", Location = new Point(230, 160), Size = new Size(100, 30) };
+            lblLogin = new Label { Text = "Логин:", Location = new Point(120, 80), Size = new Size(80, 20) };
+            txtLogin = new TextBox { Location = new Point(210, 78), Size = new Size(170, 22) };
+
+            lblPassword = new Label { Text = "Пароль:", Location = new Point(120, 110), Size = new Size(80, 20) };
+            txtPassword = new TextBox { Location = new Point(210, 108), Size = new Size(170, 22), PasswordChar = '*' };
+
+            btnLogin = new Button { Text = "Войти", Location = new Point(210, 140), Size = new Size(170, 30), BackColor = Color.LightGreen };
             btnLogin.Click += BtnLogin_Click;
 
-            loginPanel.Controls.AddRange(new Control[] { lblLogin, txtLogin, lblPassword, txtPassword, btnLogin });
+            // --- Регистрация ---
+            var lblSectionRegister = new Label
+            {
+                Text = "── Регистрация ──",
+                Font = new Font("Arial", 10, FontStyle.Bold),
+                Location = new Point(150, 190),
+                Size = new Size(200, 20),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
 
-            // === Игровая панель ===
+            lblNewLogin = new Label { Text = "Логин:", Location = new Point(120, 220), Size = new Size(80, 20) };
+            txtNewLogin = new TextBox { Location = new Point(210, 218), Size = new Size(170, 22) };
+
+            lblNewPassword = new Label { Text = "Пароль:", Location = new Point(120, 250), Size = new Size(80, 20) };
+            txtNewPassword = new TextBox { Location = new Point(210, 248), Size = new Size(170, 22), PasswordChar = '*' };
+
+            lblNewPasswordConfirm = new Label { Text = "Повтор:", Location = new Point(120, 280), Size = new Size(80, 20) };
+            txtNewPasswordConfirm = new TextBox { Location = new Point(210, 278), Size = new Size(170, 22), PasswordChar = '*' };
+
+            btnRegister = new Button { Text = "Зарегистрироваться", Location = new Point(210, 310), Size = new Size(170, 30), BackColor = Color.LightSkyBlue };
+            btnRegister.Click += BtnRegister_Click;
+
+            lblLoginMessage = new Label
+            {
+                Text = "",
+                Font = new Font("Arial", 9),
+                Location = new Point(50, 360),
+                Size = new Size(400, 40),
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.Red
+            };
+
+            loginPanel.Controls.AddRange(new Control[] {
+                lblLoginTitle, lblSectionLogin,
+                lblLogin, txtLogin, lblPassword, txtPassword, btnLogin,
+                lblSectionRegister,
+                lblNewLogin, txtNewLogin, lblNewPassword, txtNewPassword,
+                lblNewPasswordConfirm, txtNewPasswordConfirm, btnRegister,
+                lblLoginMessage
+            });
+
+            // === ИГРОВАЯ ПАНЕЛЬ ===
             gamePanel = new Panel { Dock = DockStyle.Fill };
 
             lblTitle = new Label
@@ -131,20 +201,26 @@ namespace guessTheWord
             btnNewGame = new Button { Text = "Новая игра", Location = new Point(160, 290), Size = new Size(120, 28) };
             btnNewGame.Click += BtnNewGame_Click;
 
+            btnLogout = new Button { Text = "Выход", Location = new Point(300, 290), Size = new Size(80, 28), BackColor = Color.LightPink };
+            btnLogout.Click += BtnLogout_Click;
+
             gamePanel.Controls.AddRange(new Control[] {
                 lblTitle, lblWord, lblAttempts, lblTried, lblStatus,
                 txtLetter, btnGuessLetter, txtWordGuess, btnGuessWord,
-                btnHint, btnNewGame
+                btnHint, btnNewGame, btnLogout
             });
 
             this.Controls.Add(loginPanel);
             this.Controls.Add(gamePanel);
         }
 
+        // =================== ЛОГИН / РЕГИСТРАЦИЯ ===================
+
         private void ShowLogin()
         {
             loginPanel.Visible = true;
             gamePanel.Visible = false;
+            ClearLoginFields();
             txtLogin.Focus();
         }
 
@@ -155,28 +231,104 @@ namespace guessTheWord
             this.Text = $"Угадай слово — {player.Login}";
         }
 
+        private void ClearLoginFields()
+        {
+            txtLogin.Text = "";
+            txtPassword.Text = "";
+            txtNewLogin.Text = "";
+            txtNewPassword.Text = "";
+            txtNewPasswordConfirm.Text = "";
+            lblLoginMessage.Text = "";
+        }
+
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             string login = txtLogin.Text.Trim();
             string password = txtPassword.Text.Trim();
 
-            if (string.IsNullOrEmpty(login))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Введите логин!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblLoginMessage.Text = "Введите логин и пароль!";
+                lblLoginMessage.ForeColor = Color.Red;
                 return;
             }
-            if (string.IsNullOrEmpty(password))
+
+            if (!PlayerDatabase.Validate(login, password))
             {
-                MessageBox.Show("Введите пароль!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblLoginMessage.Text = "Неверный логин или пароль!";
+                lblLoginMessage.ForeColor = Color.Red;
                 return;
             }
 
             player = new Player(login, password);
             logic = new Logic();
-
             ShowGame();
             StartNewGame();
         }
+
+        private void BtnRegister_Click(object sender, EventArgs e)
+        {
+            string login = txtNewLogin.Text.Trim();
+            string password = txtNewPassword.Text.Trim();
+            string confirm = txtNewPasswordConfirm.Text.Trim();
+
+            if (string.IsNullOrEmpty(login))
+            {
+                lblLoginMessage.Text = "Введите логин (минимум 2 символа)!";
+                lblLoginMessage.ForeColor = Color.Red;
+                return;
+            }
+
+            if (login.Length < 2)
+            {
+                lblLoginMessage.Text = "Логин слишком короткий (мин. 2 символа)!";
+                lblLoginMessage.ForeColor = Color.Red;
+                return;
+            }
+
+            if (password.Length < 3)
+            {
+                lblLoginMessage.Text = "Пароль слишком короткий (мин. 3 символа)!";
+                lblLoginMessage.ForeColor = Color.Red;
+                return;
+            }
+
+            if (password != confirm)
+            {
+                lblLoginMessage.Text = "Пароли не совпадают!";
+                lblLoginMessage.ForeColor = Color.Red;
+                return;
+            }
+
+            if (PlayerDatabase.Exists(login))
+            {
+                lblLoginMessage.Text = "Такой логин уже занят!";
+                lblLoginMessage.ForeColor = Color.Red;
+                return;
+            }
+
+            if (PlayerDatabase.Register(login, password))
+            {
+                lblLoginMessage.Text = "Регистрация успешна! Теперь войдите.";
+                lblLoginMessage.ForeColor = Color.Green;
+                txtLogin.Text = login;
+                txtPassword.Focus();
+            }
+            else
+            {
+                lblLoginMessage.Text = "Ошибка регистрации!";
+                lblLoginMessage.ForeColor = Color.Red;
+            }
+        }
+
+        private void BtnLogout_Click(object sender, EventArgs e)
+        {
+            player = null;
+            logic = null;
+            ShowLogin();
+        }
+
+        // =================== ИГРА ===================
 
         private void StartNewGame()
         {
@@ -198,7 +350,6 @@ namespace guessTheWord
             Game g = logic.CurrentGame;
             if (g == null) return;
 
-            // Показываем слово с пробелами между буквами
             string display = "";
             foreach (char c in g.Revealed)
                 display += c + " ";
@@ -230,29 +381,30 @@ namespace guessTheWord
             if (logic.CurrentGame == null || logic.CurrentGame.IsOver) return;
 
             if (string.IsNullOrEmpty(txtLetter.Text))
+                return;
+
+            char letter = txtLetter.Text[0];
+            char lowerLetter = char.ToLower(letter);
+
+            if (logic.CurrentGame.TriedLetters.Contains(lowerLetter))
             {
-                MessageBox.Show("Введите букву!", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblStatus.Text = $"Буква '{lowerLetter}' уже была!";
+                lblStatus.ForeColor = Color.Orange;
+                txtLetter.Text = "";
+                txtLetter.Focus();
                 return;
             }
 
-            char letter = txtLetter.Text[0];
             bool found = logic.GuessLetter(letter);
 
-            if (logic.CurrentGame.TriedLetters.Count > 0 &&
-                logic.CurrentGame.TriedLetters[logic.CurrentGame.TriedLetters.Count - 1] != letter)
+            if (found)
             {
-                // Буква уже была — не считаем ошибкой
-                lblStatus.Text = $"Буква '{letter}' уже была!";
-                lblStatus.ForeColor = Color.Orange;
-            }
-            else if (found)
-            {
-                lblStatus.Text = $"Буква '{letter}' есть!";
+                lblStatus.Text = $"Буква '{lowerLetter}' есть!";
                 lblStatus.ForeColor = Color.Green;
             }
             else
             {
-                lblStatus.Text = $"Буквы '{letter}' нет!";
+                lblStatus.Text = $"Буквы '{lowerLetter}' нет!";
                 lblStatus.ForeColor = Color.Red;
             }
 
@@ -267,10 +419,7 @@ namespace guessTheWord
             if (logic.CurrentGame == null || logic.CurrentGame.IsOver) return;
 
             if (string.IsNullOrEmpty(txtWordGuess.Text.Trim()))
-            {
-                MessageBox.Show("Введите слово!", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
-            }
 
             bool won = logic.GuessWord(txtWordGuess.Text.Trim());
 

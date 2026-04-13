@@ -1,30 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace guessTheWord
 {
+    /// <summary>
+    /// Игра — хранит загаданное слово, его состояние и результат
+    /// </summary>
     internal class Game
     {
+        private static readonly Random rng = new Random();
 
-        string[] wordStorage = { "зима", "три", "источник", "пенал" };
+        private static readonly string[] wordStorage = {
+            "зима", "источник", "пенал", "молоток",
+            "клавиатура", "монитор", "программа", "калькулятор",
+            "велосипед", "путешествие", "шоколад", "библиотека"
+        };
+
+        private string word;           // загаданное слово
+        private char[] revealed;       // открытые буквы ( '_' = скрытая )
+        private int attemptsLeft;      // оставшиеся попытки
+        private List<char> triedLetters; // уже названные буквы
+        private bool isWon;
+
+        public string Word { get => word; }
+        public char[] Revealed { get => revealed; }
+        public int AttemptsLeft { get => attemptsLeft; }
+        public List<char> TriedLetters { get => triedLetters; }
+        public bool IsWon { get => isWon; }
+        public bool IsOver { get => isWon || attemptsLeft <= 0; }
 
         public Game()
         {
-            Random random = new Random();
-            while (true)
-            {
+            // Выбираем случайное слово
+            word = wordStorage[rng.Next(wordStorage.Length)];
+            revealed = new char[word.Length];
+            for (int i = 0; i < word.Length; i++)
+                revealed[i] = '_';
 
-                int i = random.Next(wordStorage.Length);
-                
-                string wordText = wordStorage[i];
+            attemptsLeft = 6; // как в виселице — 6 ошибок
+            triedLetters = new List<char>();
+            isWon = false;
+        }
 
-                Word word = new Word(wordText);
+        /// <summary>
+        /// Открыть букву в слове по индексу
+        /// </summary>
+        public void RevealAt(int index)
+        {
+            if (index >= 0 && index < word.Length)
+                revealed[index] = word[index];
+        }
 
-                Run run = new Run(word);
-            }
+        /// <summary>
+        /// Проверить, открыты ли все буквы
+        /// </summary>
+        public bool AllRevealed()
+        {
+            foreach (char c in revealed)
+                if (c == '_') return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Текущее состояние слова для отображения
+        /// </summary>
+        public string GetDisplayWord()
+        {
+            return new string(revealed);
+        }
+
+        /// <summary>
+        /// Уменьшить количество попыток
+        /// </summary>
+        public void LoseAttempt()
+        {
+            attemptsLeft--;
+        }
+
+        /// <summary>
+        /// Отметить победу
+        /// </summary>
+        public void Win()
+        {
+            isWon = true;
+            // Раскрываем всё слово
+            for (int i = 0; i < word.Length; i++)
+                revealed[i] = word[i];
         }
     }
 }

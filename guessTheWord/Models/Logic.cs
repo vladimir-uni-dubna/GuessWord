@@ -1,34 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 
 namespace guessTheWord
 {
-    /// <summary>
-    /// Логика — правила игры, проверка букв, ходы
-    /// </summary>
     internal class Logic
     {
         private Game game;
 
-        public Game CurrentGame { get => game; }
+        public Game CurrentGame => game;
 
         public Logic()
         {
             game = null;
         }
 
-        /// <summary>
-        /// Начать новую игру
-        /// </summary>
         public Game StartNewGame()
         {
             game = new Game();
             return game;
         }
 
-        /// <summary>
-        /// Попробовать угадать букву. Возвращает true если буква есть в слове.
-        /// </summary>
         public bool GuessLetter(char letter)
         {
             if (game == null || game.IsOver)
@@ -36,7 +26,6 @@ namespace guessTheWord
 
             letter = char.ToLower(letter);
 
-            // Уже пробовали эту букву
             if (game.TriedLetters.Contains(letter))
                 return false;
 
@@ -55,16 +44,12 @@ namespace guessTheWord
             if (!found)
                 game.LoseAttempt();
 
-            // Проверяем победу
             if (game.AllRevealed())
                 game.Win();
 
             return found;
         }
 
-        /// <summary>
-        /// Попробовать угадать слово целиком
-        /// </summary>
         public bool GuessWord(string guess)
         {
             if (game == null || game.IsOver)
@@ -82,9 +67,6 @@ namespace guessTheWord
             }
         }
 
-        /// <summary>
-        /// Получить подсказку — открыть первую скрытую букву (стоит 1 попытку)
-        /// </summary>
         public char Hint()
         {
             if (game == null || game.IsOver)
